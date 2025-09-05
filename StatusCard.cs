@@ -36,34 +36,27 @@ namespace CleanMonitor
             statusPanel.Controls.Add(statusPic, 0, 1);
             statusPanel.Controls.Add(statusCnt, 0, 2);
             statusPanel.Controls.Add(statusText, 0, 3);
-            statusPanel.Location = new System.Drawing.Point(3, 3);
             statusPanel.RowCount = 5;
             statusPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             statusPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45F));
             statusPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             statusPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             statusPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            statusPanel.Size = new System.Drawing.Size(290, 174);
 
             statusPic.Anchor = System.Windows.Forms.AnchorStyles.None;
             statusPic.BackColor = System.Drawing.Color.LightSteelBlue;
-            statusPic.Location = new System.Drawing.Point(120, 31);
             statusPic.Size = new System.Drawing.Size(50, 50);
             statusPic.TabStop = false;
 
             statusCnt.AutoSize = true;
             statusCnt.Dock = System.Windows.Forms.DockStyle.Fill;
             statusCnt.Font = new System.Drawing.Font("맑은 고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            statusCnt.Location = new System.Drawing.Point(3, 95);
-            statusCnt.Size = new System.Drawing.Size(284, 43);
             statusCnt.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             
 
             statusText.AutoSize = true;
             statusText.Dock = System.Windows.Forms.DockStyle.Top;
             statusText.Font = new System.Drawing.Font("맑은 고딕", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            statusText.Location = new System.Drawing.Point(3, 138);
-            statusText.Size = new System.Drawing.Size(284, 17);
             statusText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
         }

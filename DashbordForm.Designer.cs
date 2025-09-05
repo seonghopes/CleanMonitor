@@ -48,7 +48,7 @@
             this.tlpHead.Name = "tlpHead";
             this.tlpHead.RowCount = 1;
             this.tlpHead.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpHead.Size = new System.Drawing.Size(1184, 75);
+            this.tlpHead.Size = new System.Drawing.Size(1184, 58);
             this.tlpHead.TabIndex = 0;
             // 
             // pHead
@@ -57,7 +57,7 @@
             this.pHead.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pHead.Location = new System.Drawing.Point(3, 3);
             this.pHead.Name = "pHead";
-            this.pHead.Size = new System.Drawing.Size(1178, 69);
+            this.pHead.Size = new System.Drawing.Size(1178, 52);
             this.pHead.TabIndex = 0;
             // 
             // label1
@@ -66,7 +66,7 @@
             this.label1.AutoSize = true;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.label1.Font = new System.Drawing.Font("맑은 고딕", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.label1.Location = new System.Drawing.Point(50, 15);
+            this.label1.Location = new System.Drawing.Point(50, 7);
             this.label1.Margin = new System.Windows.Forms.Padding(25, 0, 3, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(200, 37);
@@ -83,11 +83,11 @@
             this.tlpMainCard.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpMainCard.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpMainCard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMainCard.Location = new System.Drawing.Point(0, 75);
+            this.tlpMainCard.Location = new System.Drawing.Point(0, 58);
             this.tlpMainCard.Name = "tlpMainCard";
             this.tlpMainCard.RowCount = 1;
             this.tlpMainCard.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMainCard.Size = new System.Drawing.Size(1184, 306);
+            this.tlpMainCard.Size = new System.Drawing.Size(1184, 323);
             this.tlpMainCard.TabIndex = 1;
             // 
             // tlpStatusCard
