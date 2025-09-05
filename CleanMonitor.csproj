@@ -52,8 +52,14 @@
     <Compile Include="DashbordForm.Designer.cs">
       <DependentUpon>DashbordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MainCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatusCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <EmbeddedResource Include="DashbordForm.resx">
       <DependentUpon>DashbordForm.cs</DependentUpon>
     </EmbeddedResource>
