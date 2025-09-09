@@ -72,9 +72,9 @@ namespace CleanMonitor
             mainPanel.RowCount = 8;
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 13F));
+            mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 7F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
@@ -98,14 +98,14 @@ namespace CleanMonitor
             subSection.Dock = System.Windows.Forms.DockStyle.Top;
             subSection.Text = "sub section";                                            //
             subSection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            subSection.Font = new System.Drawing.Font("맑은 고딕", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129))); ;
+            subSection.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129))); ;
 
             statusCir1.Anchor = System.Windows.Forms.AnchorStyles.None;
             statusCir1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             statusCir1.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusCir1.ForeColor = System.Drawing.Color.Red;
             statusCir1.Size = new System.Drawing.Size(25, 25);
-            statusCir1.Text = "2";                                                        //
+            statusCir1.Text = "0";                                                        //
             statusCir1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             statusCir2.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -113,7 +113,7 @@ namespace CleanMonitor
             statusCir2.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusCir2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             statusCir2.Size = new System.Drawing.Size(25, 25);
-            statusCir2.Text = "1";                                                       //
+            statusCir2.Text = "0";                                                       //
             statusCir2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             statusCir3.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -121,7 +121,7 @@ namespace CleanMonitor
             statusCir3.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusCir3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             statusCir3.Size = new System.Drawing.Size(25, 25);
-            statusCir3.Text = "2";                                                      //
+            statusCir3.Text = "3";                                                      //
             statusCir3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
 
@@ -153,6 +153,8 @@ namespace CleanMonitor
             updateTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         }
 
-        //public void SetWarnCnt() { }
+        public void SetWarnCnt(int cnt) {
+            statusText1.Text = cnt.ToString();
+        }
     }
 }

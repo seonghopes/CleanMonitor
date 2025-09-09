@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,31 +15,39 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
+        SerialPort serialDtsensor;
         public DashbordForm()
         {
             InitializeComponent();
             CustomStyleInit();
+
+            this.WindowState = FormWindowState.Maximized; 
+            this.MinimumSize = new Size(920, 860);
+            this.MaximumSize = new Size(1920, 1080);
+
+
+            //serialDtsensor = new SerialPort("COM3", 9600);
+            //serialDtsensor.DataReceived += Serial_DataReceived;
+            //serialDtsensor.Open();
         }
+
+        //private void Serial_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        //{
+        //    string data = serialDtsensor.ReadLine();
+        //    this.Invoke(new Action(() =>
+        //    {
+        //        lblDist.Text = data; // UI에 표시
+
+        //        if (float.TryParse(data, out float distance))
+        //        {
+                    
+        //        }
+        //    }));
+        //}
+
 
         private void CustomStyleInit()
         {
-            //tlpStatusCard.MaximumSize = new Size(0, 180);
-            //tlpStatusCard.Padding = new Padding(15, 10, 15, 10);
-            //tlpMain.Padding = new Padding(15, 10, 15, 10);
-            //tlpMain.Dock = DockStyle.Fill;
-
-            //Panel[] statusPanels = { statusCard1, statusCard1, statusCard1, statusCard1 };
-            //foreach (var panel in statusPanels)
-            //{
-            //    panel.Margin = new Padding(10);
-            //}
-
-            //Panel[] mainPanels = { pMain1, pMain2, pMain3, pMain4, pMain5 };
-            //foreach (var panel in mainPanels)
-            //{
-            //    panel.Margin = new Padding(10);
-            //}
-
             StatusCard statusCard1 = new StatusCard();
             StatusCard statusCard2 = new StatusCard();
             StatusCard statusCard3 = new StatusCard();
@@ -61,12 +70,21 @@ namespace CleanMonitor
             MainCard mainCard3 = new MainCard();
             MainCard mainCard4 = new MainCard();
             MainCard mainCard5 = new MainCard();
+            MainCard mainCard6 = new MainCard();
+            MainCard mainCard7 = new MainCard();
+            MainCard mainCard8 = new MainCard();
+            MainCard mainCard9 = new MainCard();
+            MainCard mainCard10 = new MainCard();
             tlpMainCard.Controls.Add(mainCard1.mainPanel, 0, 0);
             tlpMainCard.Controls.Add(mainCard2.mainPanel, 1, 0);
             tlpMainCard.Controls.Add(mainCard3.mainPanel, 2, 0);
             tlpMainCard.Controls.Add(mainCard4.mainPanel, 3, 0);
             tlpMainCard.Controls.Add(mainCard5.mainPanel, 4, 0);
-
+            tlpMainCard.Controls.Add(mainCard6.mainPanel, 5, 0);
+            tlpMainCard.Controls.Add(mainCard7.mainPanel, 6, 0);
+            tlpMainCard.Controls.Add(mainCard8.mainPanel, 7, 0);
+            tlpMainCard.Controls.Add(mainCard9.mainPanel, 8, 0);
+            tlpMainCard.Controls.Add(mainCard10.mainPanel, 9, 0);
         }
     }
 }
