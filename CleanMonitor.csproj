@@ -52,6 +52,9 @@
     <Compile Include="DashbordForm.Designer.cs">
       <DependentUpon>DashbordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="DummyCard.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MainCard.cs">
       <SubType>UserControl</SubType>
     </Compile>

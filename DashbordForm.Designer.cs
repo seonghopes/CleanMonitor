@@ -34,8 +34,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tlpMainCard = new System.Windows.Forms.TableLayoutPanel();
             this.tlpStatusCard = new System.Windows.Forms.TableLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.tlpHead.SuspendLayout();
             this.pHead.SuspendLayout();
+            this.tlpMainCard.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpHead
@@ -93,6 +95,7 @@
             this.tlpMainCard.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpMainCard.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpMainCard.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpMainCard.Controls.Add(this.panel1, 4, 1);
             this.tlpMainCard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMainCard.Location = new System.Drawing.Point(0, 58);
             this.tlpMainCard.Name = "tlpMainCard";
@@ -118,6 +121,14 @@
             this.tlpStatusCard.Size = new System.Drawing.Size(1184, 180);
             this.tlpStatusCard.TabIndex = 0;
             // 
+            // panel1
+            // 
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(947, 164);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(234, 156);
+            this.panel1.TabIndex = 0;
+            // 
             // DashbordForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -131,6 +142,7 @@
             this.tlpHead.ResumeLayout(false);
             this.pHead.ResumeLayout(false);
             this.pHead.PerformLayout();
+            this.tlpMainCard.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -142,6 +154,7 @@
         private System.Windows.Forms.TableLayoutPanel tlpMainCard;
         private System.Windows.Forms.TableLayoutPanel tlpStatusCard;
         private System.Windows.Forms.Label lblDist;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 

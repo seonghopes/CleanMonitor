@@ -98,7 +98,7 @@ namespace CleanMonitor
             subSection.Dock = System.Windows.Forms.DockStyle.Top;
             subSection.Text = "sub section";                                            //
             subSection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            subSection.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129))); ;
+            subSection.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
             statusCir1.Anchor = System.Windows.Forms.AnchorStyles.None;
             statusCir1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
