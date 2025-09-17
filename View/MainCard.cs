@@ -153,8 +153,16 @@ namespace CleanMonitor
             updateTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         }
 
-        public void SetWarnCnt(int cnt) {
-            statusText1.Text = cnt.ToString();
+        public void SetStatus(int urgent, int warning, int normal)
+        {
+            statusCir1.Text = urgent.ToString();
+            statusCir2.Text = warning.ToString();
+            statusCir3.Text = normal.ToString();
+        }
+
+        public void UpdateTime(string text)
+        {
+            updateTime.Text = text;
         }
     }
 }

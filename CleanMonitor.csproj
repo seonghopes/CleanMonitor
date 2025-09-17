@@ -52,15 +52,15 @@
     <Compile Include="DashbordForm.Designer.cs">
       <DependentUpon>DashbordForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DummyCard.cs">
+    <Compile Include="View\DummyCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MainCard.cs">
+    <Compile Include="View\MainCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StatusCard.cs">
+    <Compile Include="View\StatusCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <EmbeddedResource Include="DashbordForm.resx">
@@ -87,6 +87,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modal\" />
+    <Folder Include="Setting\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

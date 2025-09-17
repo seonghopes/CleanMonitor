@@ -17,12 +17,12 @@ namespace CleanMonitor
 
         public TableLayoutPanel MainCard;
 
-        public StatusCard() 
+        public StatusCard(Color color, Image pic = null) 
         {
-            InitUI();
+            InitUI(color,pic);
         }
 
-        private void InitUI()
+        private void InitUI(Color color,Image pic)
         {
             this.statusPanel = new System.Windows.Forms.TableLayoutPanel();
             this.statusPic = new System.Windows.Forms.PictureBox();
@@ -44,9 +44,15 @@ namespace CleanMonitor
             statusPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
 
             statusPic.Anchor = System.Windows.Forms.AnchorStyles.None;
-            statusPic.BackColor = System.Drawing.Color.LightSteelBlue;
+            statusPic.BackColor = color; 
             statusPic.Size = new System.Drawing.Size(50, 50);
             statusPic.TabStop = false;
+            if (pic != null)
+            {
+                statusPic.Image = pic;          
+                statusPic.SizeMode = PictureBoxSizeMode.Zoom; 
+                statusPic.BackColor = Color.Transparent;
+            }
 
             statusCnt.AutoSize = true;
             statusCnt.Dock = System.Windows.Forms.DockStyle.Fill;

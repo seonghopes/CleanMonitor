@@ -40,18 +40,18 @@ namespace CleanMonitor
 
         //        if (float.TryParse(data, out float distance))
         //        {
-                    
+
         //        }
         //    }));
         //}
 
-
+        
         private void CustomStyleInit()
         {
-            StatusCard statusCard1 = new StatusCard();
-            StatusCard statusCard2 = new StatusCard();
-            StatusCard statusCard3 = new StatusCard();
-            StatusCard statusCard4 = new StatusCard();
+            StatusCard statusCard1 = new StatusCard(Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
+            StatusCard statusCard2 = new StatusCard(Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
+            StatusCard statusCard3 = new StatusCard(Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
+            StatusCard statusCard4 = new StatusCard(Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
             tlpStatusCard.Controls.Add(statusCard1.statusPanel, 0, 0);
             tlpStatusCard.Controls.Add(statusCard2.statusPanel, 1, 0);
             tlpStatusCard.Controls.Add(statusCard3.statusPanel, 2, 0);
@@ -82,7 +82,7 @@ namespace CleanMonitor
             //DummyCard dummyCard5 = new DummyCard();
             //DummyCard dummyCard6 = new DummyCard();
             //DummyCard dummyCard7 = new DummyCard();
-            //DummyCard dummyCard8 = new DummyCard();
+            DummyCard dummyCard8 = new DummyCard();
             //tlpMainCard.Controls.Add(dummyCard1.dummyPanel, 2, 0);
             //tlpMainCard.Controls.Add(dummyCard2.dummyPanel, 3, 0);
             //tlpMainCard.Controls.Add(dummyCard3.dummyPanel, 4, 0);
@@ -90,7 +90,7 @@ namespace CleanMonitor
             //tlpMainCard.Controls.Add(dummyCard5.dummyPanel, 6, 0);
             //tlpMainCard.Controls.Add(dummyCard6.dummyPanel, 7, 0);
             //tlpMainCard.Controls.Add(dummyCard7.dummyPanel, 8, 0);
-            //tlpMainCard.Controls.Add(dummyCard8.dummyPanel, 9, 0);
+            tlpMainCard.Controls.Add(dummyCard8.dummyPanel, 9, 0);
             tlpMainCard.Controls.Add(mainCard1.mainPanel, 0, 0);
             tlpMainCard.Controls.Add(mainCard2.mainPanel, 1, 0);
             tlpMainCard.Controls.Add(mainCard3.mainPanel, 2, 0);
@@ -100,7 +100,27 @@ namespace CleanMonitor
             tlpMainCard.Controls.Add(mainCard7.mainPanel, 6, 0);
             tlpMainCard.Controls.Add(mainCard8.mainPanel, 7, 0);
             tlpMainCard.Controls.Add(mainCard9.mainPanel, 8, 0);
-            tlpMainCard.Controls.Add(mainCard10.mainPanel, 9, 0);
+            //tlpMainCard.Controls.Add(mainCard10.mainPanel, 9, 0);
+        }
+
+        private Image LoadImageSafe(string path)
+        {
+            try
+            {
+                if (System.IO.File.Exists(path))
+                {
+                    return Image.FromFile(path);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"이미지 로드 실패: {ex.Message}");
+                return null;
+            }
         }
     }
 }
