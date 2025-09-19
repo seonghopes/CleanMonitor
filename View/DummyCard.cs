@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CleanMonitor.View.Modal;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace CleanMonitor
     {
         public TableLayoutPanel dummyPanel;
         private Button addBtn;
+        public event EventHandler AddClick;
 
         public DummyCard()
         {
@@ -22,6 +24,7 @@ namespace CleanMonitor
         {
             this.dummyPanel = new System.Windows.Forms.TableLayoutPanel();
             this.addBtn = new System.Windows.Forms.Button();
+
 
 
             dummyPanel.BackColor = System.Drawing.Color.WhiteSmoke;
@@ -36,7 +39,7 @@ namespace CleanMonitor
             dummyPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
             dummyPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
             dummyPanel.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
-            dummyPanel.Size = new System.Drawing.Size(230, 300);
+            //dummyPanel.Size = new System.Drawing.Size(230, 300);
 
 
             addBtn.Dock = DockStyle.None;
@@ -62,9 +65,15 @@ namespace CleanMonitor
                 addBtn.FlatAppearance.BorderColor = Color.LightGray;
             };
 
+            addBtn.Click += (s, e) =>
+            {
+                AddClick?.Invoke(this, EventArgs.Empty); 
+            };
+
+
             dummyPanel.Controls.Add(addBtn, 1, 1);
+
+          
         }
-
-
     }
 }

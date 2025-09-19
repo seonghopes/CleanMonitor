@@ -47,11 +47,18 @@ namespace CleanMonitor
             statusPic.BackColor = color; 
             statusPic.Size = new System.Drawing.Size(50, 50);
             statusPic.TabStop = false;
+
+            statusPic.Paint += (s, e) =>
+            {
+                System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddEllipse(0, 0, statusPic.Width - 1, statusPic.Height - 1);
+                statusPic.Region = new Region(path);
+            };
+
             if (pic != null)
             {
-                statusPic.Image = pic;          
-                statusPic.SizeMode = PictureBoxSizeMode.Zoom; 
-                statusPic.BackColor = Color.Transparent;
+                statusPic.Image = pic;
+                statusPic.SizeMode = PictureBoxSizeMode.CenterImage;
             }
 
             statusCnt.AutoSize = true;

@@ -53,7 +53,6 @@ namespace CleanMonitor
 
             mainPanel.BackColor = System.Drawing.Color.White;
             mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-
             mainPanel.ColumnCount = 3;
             mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
@@ -78,7 +77,7 @@ namespace CleanMonitor
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            mainPanel.Size = new System.Drawing.Size(230, 300);
+            //mainPanel.Size = new System.Drawing.Size(230, 300);
 
             mainPanel.SetColumnSpan(mainPic, 3);
             mainPanel.SetColumnSpan(mainSection, 3);
@@ -108,6 +107,13 @@ namespace CleanMonitor
             statusCir1.Text = "0";                                                        //
             statusCir1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
+            statusCir1.Paint += (s, e) =>
+            {
+                System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddEllipse(0, 0, statusCir1.Width - 1, statusCir1.Height - 1);
+                statusCir1.Region = new System.Drawing.Region(path);
+            };
+
             statusCir2.Anchor = System.Windows.Forms.AnchorStyles.None;
             statusCir2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             statusCir2.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
@@ -115,6 +121,13 @@ namespace CleanMonitor
             statusCir2.Size = new System.Drawing.Size(25, 25);
             statusCir2.Text = "0";                                                       //
             statusCir2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+
+            statusCir2.Paint += (s, e) =>
+            {
+                System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddEllipse(0, 0, statusCir2.Width - 1, statusCir2.Height - 1);
+                statusCir2.Region = new System.Drawing.Region(path);
+            };
 
             statusCir3.Anchor = System.Windows.Forms.AnchorStyles.None;
             statusCir3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
@@ -124,6 +137,12 @@ namespace CleanMonitor
             statusCir3.Text = "3";                                                      //
             statusCir3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
+            statusCir3.Paint += (s, e) =>
+            {
+                System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddEllipse(0, 0, statusCir3.Width - 1, statusCir3.Height - 1);
+                statusCir3.Region = new System.Drawing.Region(path);
+            };
 
             statusText1.AutoSize = true;
             statusText1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -163,6 +182,20 @@ namespace CleanMonitor
         public void UpdateTime(string text)
         {
             updateTime.Text = text;
+        }
+        
+        public void ChangeBorader() 
+        {
+            mainPanel.BorderStyle = BorderStyle.FixedSingle;
+        }
+
+        public void SetMainSection(string section)
+        {
+            mainSection.Text = section;
+        }
+        public void SetSubSection(string section)
+        {
+            subSection.Text = section;
         }
     }
 }
