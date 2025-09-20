@@ -11,14 +11,14 @@ using System.Windows.Forms;
 
 namespace CleanMonitor.View.Modal
 {
-    public partial class MainCardAdd : Form
+    public partial class MainCardAddModal : Form
     {
-        public event EventHandler<ToiletStatus> MainCardAdded;
-        public MainCardAdd()
+        public event EventHandler<ToiletStatus> MainCardAdd;
+        public MainCardAddModal()
         {
             InitializeComponent();
 
-            this.AcceptButton = btnAdd;
+            this.AcceptButton = btnAdd; // 엔터키
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -38,7 +38,7 @@ namespace CleanMonitor.View.Modal
                 SubSection = sub,
             };
 
-            MainCardAdded?.Invoke(this, status);
+            MainCardAdd?.Invoke(this, status);
             this.Close();
         }
 

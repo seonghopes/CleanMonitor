@@ -15,8 +15,6 @@ namespace CleanMonitor
         private Label statusCnt;
         private Label statusText;
 
-        public TableLayoutPanel MainCard;
-
         public StatusCard(Color color, Image pic = null) 
         {
             InitUI(color,pic);

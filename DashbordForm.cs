@@ -1,4 +1,5 @@
 ﻿using CleanMonitor.Models;
+using CleanMonitor.Repository;
 using CleanMonitor.View.Modal;
 using System;
 using System.Collections.Generic;
@@ -17,10 +18,21 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
+
+        private List<ToiletStatus> toiletStatusList = new List<ToiletStatus>();
+
+        private ToiletRepository repository = new ToiletRepository();
+
+        private Dictionary<string, MainCard> IdMapCard = new Dictionary<string, MainCard>();
+
         public DashbordForm()
         {
             InitializeComponent();
+
             CustomStyleInit();
+            AddDummyCard();
+            AddStuatusCard();
+            LoadToiletStatusList();
 
         }
         private void CustomStyleInit()
@@ -28,7 +40,10 @@ namespace CleanMonitor
             this.WindowState = FormWindowState.Maximized;
             this.MinimumSize = new Size(1024, 860);
             this.MaximumSize = new Size(1920, 1080);
+        }
 
+        public void AddStuatusCard()
+        {
             StatusCard statusCard1 = new StatusCard(Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
             StatusCard statusCard2 = new StatusCard(Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
             StatusCard statusCard3 = new StatusCard(Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
@@ -45,32 +60,38 @@ namespace CleanMonitor
             statusCard2.SetText("교체 필요");
             statusCard3.SetText("주의 필요");
             statusCard4.SetText("정상 상태");
+        }
 
+        private void AddDummyCard()
+        {
             for (int row = 0; row < tlpMainCard.RowCount; row++)
                 for (int col = 0; col < tlpMainCard.ColumnCount; col++)
                 {
                     DummyCard dummyCard = new DummyCard();
 
-                    dummyCard.dummyPanel.Tag = "Dummy";
-                    dummyCard.AddClick += Dummy_AddButtonClick;
+                    dummyCard.OpenAddModal += ShowAddModal; // DummyCard Class 이벤트 연결
 
                     tlpMainCard.Controls.Add(dummyCard.dummyPanel, col, row);
-                  }
-
-          
+                }
         }
-        private void Dummy_AddButtonClick(object sender, EventArgs e)
+
+        private void LoadToiletStatusList()
         {
-            MainCardAdd addModdal = new MainCardAdd();
-            addModdal.MainCardAdded += AddModal_MainCardAdd;
-            addModdal.ShowDialog();
+            toiletStatusList = repository.LoadAll();
+            foreach (ToiletStatus status in toiletStatusList)
+            {
+                AddMainCard(status);
+            }
         }
 
-        private void AddModal_MainCardAdd(object sender, ToiletStatus status)
+ 
+        private void AddMainCard(ToiletStatus status)
         {
             MainCard mc = new MainCard();
-            mc.SetMainSection(status.MainSection);
-            mc.SetSubSection(status.SubSection);
+            mc.SetSection(status);
+            mc.SetToiletId(status.ToiletId);
+            mc.OpenDeleteModal += ShowDeleteModal;
+
             for (int row = 0; row < tlpMainCard.RowCount; row++)
                 for (int col = 0; col < tlpMainCard.ColumnCount; col++)
                 {
@@ -78,10 +99,59 @@ namespace CleanMonitor
                     if (ctrl != null && ctrl.Tag?.ToString() == "Dummy")
                     {
                         tlpMainCard.Controls.Remove(ctrl);
-                        tlpMainCard.Controls.Add(mc.mainPanel,col,row);
+                        tlpMainCard.Controls.Add(mc.mainPanel, col, row);
+
+                        if (!IdMapCard.ContainsKey(status.ToiletId))
+                            IdMapCard.Add(status.ToiletId, mc);
+
                         return;
                     }
                 }
+        }
+
+
+        private void ShowAddModal(object sender, EventArgs e)
+        {
+            MainCardAddModal addModal = new MainCardAddModal();
+
+            addModal.MainCardAdd += (s, status) =>
+            {
+                AddMainCard(status);
+                toiletStatusList.Add(status);
+                repository.SaveAll(toiletStatusList);
+            };
+
+            addModal.ShowDialog();
+        }
+
+
+        private void ShowDeleteModal(object sender, string toiletId)
+        {
+            MainCard mc = sender as MainCard;
+            if (mc == null) return;
+
+            MainCardDeleteModal deleteModal = new MainCardDeleteModal();
+
+
+            deleteModal.MainCardDelete += (s, args) =>
+            {
+                tlpMainCard.Controls.Remove(mc.mainPanel);
+                IdMapCard.Remove(mc.ToiletId);
+
+                var ts = toiletStatusList.FirstOrDefault(x => x.ToiletId == mc.ToiletId);
+                if (ts != null)
+                {
+                    toiletStatusList.Remove(ts);
+                    repository.SaveAll(toiletStatusList);
+                }
+                TableLayoutPanelCellPosition pos = tlpMainCard.GetPositionFromControl(mc.mainPanel);
+                DummyCard dummyCard = new DummyCard();
+                dummyCard.OpenAddModal += ShowAddModal;
+
+                tlpMainCard.Controls.Add(dummyCard.dummyPanel, pos.Column, pos.Row);
+            };
+
+            deleteModal.ShowDialog();
         }
 
         private Image LoadImageSafe(string path)

@@ -12,12 +12,17 @@ namespace CleanMonitor
     internal class DummyCard : UserControl
     {
         public TableLayoutPanel dummyPanel;
+
         private Button addBtn;
-        public event EventHandler AddClick;
+        public event EventHandler OpenAddModal;
+
+        public const string DUMMY_TAG = "Dummy";
 
         public DummyCard()
         {
             InitUI();
+          
+            dummyPanel.Tag = DUMMY_TAG;
         }
 
         private void InitUI()
@@ -39,8 +44,6 @@ namespace CleanMonitor
             dummyPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
             dummyPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
             dummyPanel.CellBorderStyle = TableLayoutPanelCellBorderStyle.None;
-            //dummyPanel.Size = new System.Drawing.Size(230, 300);
-
 
             addBtn.Dock = DockStyle.None;
             addBtn.Anchor = AnchorStyles.None;
@@ -67,7 +70,7 @@ namespace CleanMonitor
 
             addBtn.Click += (s, e) =>
             {
-                AddClick?.Invoke(this, EventArgs.Empty); 
+                OpenAddModal?.Invoke(this, EventArgs.Empty); 
             };
 
 

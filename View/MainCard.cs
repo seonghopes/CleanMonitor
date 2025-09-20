@@ -4,17 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CleanMonitor.Models;
+using static System.Collections.Specialized.BitVector32;
 
 namespace CleanMonitor
 {
+
     class MainCard : UserControl
     {
+        public string ToiletId { get; private set; }
+
         public TableLayoutPanel mainPanel;
 
         private PictureBox mainPic;
         
         private Label mainSection;
         private Label subSection;
+
+        public event EventHandler<string> OpenDeleteModal;
+
+        private Button deleteBtn;
 
         private Label statusCir1;
         private Label statusCir2;
@@ -37,6 +46,9 @@ namespace CleanMonitor
 
             this.mainPic = new System.Windows.Forms.PictureBox();
 
+            this.deleteBtn = new System.Windows.Forms.Button();
+
+
             this.mainSection = new System.Windows.Forms.Label();
             this.subSection = new System.Windows.Forms.Label();
 
@@ -57,6 +69,9 @@ namespace CleanMonitor
             mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+
+
+            mainPanel.Controls.Add(this.deleteBtn, 2, 0);
             mainPanel.Controls.Add(this.mainPic, 0, 1);
             mainPanel.Controls.Add(this.statusCir1, 0, 5);
             mainPanel.Controls.Add(this.statusCir2, 1, 5);
@@ -77,11 +92,23 @@ namespace CleanMonitor
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 5F));
             mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            //mainPanel.Size = new System.Drawing.Size(230, 300);
 
             mainPanel.SetColumnSpan(mainPic, 3);
             mainPanel.SetColumnSpan(mainSection, 3);
             mainPanel.SetColumnSpan(subSection, 3);
+
+            deleteBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            deleteBtn.Size = new System.Drawing.Size(20, 20);
+            deleteBtn.Text = "❌";
+            deleteBtn.Cursor = Cursors.Hand;
+            deleteBtn.FlatStyle = FlatStyle.Flat;
+            deleteBtn.FlatAppearance.BorderSize = 0;
+
+            deleteBtn.Click += (s, e) =>
+            {
+                OpenDeleteModal?.Invoke(this, ToiletId);
+            };
+
 
             mainPic.Anchor = System.Windows.Forms.AnchorStyles.None;
             mainPic.BackColor = System.Drawing.Color.LightGray;
@@ -89,13 +116,11 @@ namespace CleanMonitor
 
             mainSection.AutoSize = true;
             mainSection.Dock = System.Windows.Forms.DockStyle.Fill;
-            mainSection.Text = "MAIN SECTION";                                       //
             mainSection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             mainSection.Font = new System.Drawing.Font("맑은 고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
             subSection.AutoSize = true;
             subSection.Dock = System.Windows.Forms.DockStyle.Top;
-            subSection.Text = "sub section";                                            //
             subSection.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             subSection.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
 
@@ -148,21 +173,21 @@ namespace CleanMonitor
             statusText1.Dock = System.Windows.Forms.DockStyle.Top;
             statusText1.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusText1.ForeColor = System.Drawing.Color.Gray;
-            statusText1.Text = "긴급";                                                      //
+            statusText1.Text = "긴급";                                                      
             statusText1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             statusText2.AutoSize = true;
             statusText2.Dock = System.Windows.Forms.DockStyle.Top;
             statusText2.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusText2.ForeColor = System.Drawing.Color.Gray;
-            statusText2.Text = "주의";                                                      //
+            statusText2.Text = "주의";                                                      
             statusText2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             statusText3.AutoSize = true;
             statusText3.Dock = System.Windows.Forms.DockStyle.Top;
             statusText3.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusText3.ForeColor = System.Drawing.Color.Gray;
-            statusText3.Text = "정상";                                                      //
+            statusText3.Text = "정상";                                                      
             statusText3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             updateTime.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -172,30 +197,22 @@ namespace CleanMonitor
             updateTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         }
 
-        public void SetStatus(int urgent, int warning, int normal)
-        {
-            statusCir1.Text = urgent.ToString();
-            statusCir2.Text = warning.ToString();
-            statusCir3.Text = normal.ToString();
-        }
-
-        public void UpdateTime(string text)
-        {
-            updateTime.Text = text;
-        }
-        
+     
         public void ChangeBorader() 
         {
             mainPanel.BorderStyle = BorderStyle.FixedSingle;
         }
 
-        public void SetMainSection(string section)
+        public void SetSection(ToiletStatus status)
         {
-            mainSection.Text = section;
+            mainSection.Text = status.MainSection;
+            subSection.Text = status.SubSection;
         }
-        public void SetSubSection(string section)
+
+        public void SetToiletId(string id)
         {
-            subSection.Text = section;
+            ToiletId = id;
+            mainSection.Text = id; 
         }
     }
 }
