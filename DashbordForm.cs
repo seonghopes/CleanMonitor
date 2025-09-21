@@ -128,31 +128,34 @@ namespace CleanMonitor
 
         private void ShowDeleteModal(object sender, string toiletId)
         {
-            MainCard mc = sender as MainCard;
-            if (mc == null) return;
+            if (!IdMapCard.ContainsKey(toiletId)) return;
+
+            MainCard mc = IdMapCard[toiletId];
 
             MainCardDeleteModal deleteModal = new MainCardDeleteModal();
 
             deleteModal.MainCardDelete += (s, args) =>
             {
                 tlpMainCard.Controls.Remove(mc.mainPanel);
-                IdMapCard.Remove(mc.ToiletId);
 
-                var ts = toiletStatusList.FirstOrDefault(x => x.ToiletId == mc.ToiletId);
+                IdMapCard.Remove(toiletId);
+
+                ToiletStatus ts = toiletStatusList.FirstOrDefault(x => x.ToiletId == toiletId);
                 if (ts != null)
                 {
                     toiletStatusList.Remove(ts);
                     repository.SaveAll(toiletStatusList);
                 }
+
                 TableLayoutPanelCellPosition pos = tlpMainCard.GetPositionFromControl(mc.mainPanel);
                 DummyCard dummyCard = new DummyCard();
                 dummyCard.OpenAddModal += ShowAddModal;
-
                 tlpMainCard.Controls.Add(dummyCard.dummyPanel, pos.Column, pos.Row);
             };
 
             deleteModal.ShowDialog();
         }
+
 
         private Image LoadImageSafe(string path)
         {
