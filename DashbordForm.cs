@@ -29,13 +29,14 @@ namespace CleanMonitor
         {
             InitializeComponent();
 
-            CustomStyleInit();
+            FormSizeInit();
             AddDummyCard();
             AddStuatusCard();
+
             LoadToiletStatusList();
 
         }
-        private void CustomStyleInit()
+        private void FormSizeInit()
         {
             this.WindowState = FormWindowState.Maximized;
             this.MinimumSize = new Size(1024, 860);
@@ -89,7 +90,6 @@ namespace CleanMonitor
         {
             MainCard mc = new MainCard();
             mc.SetSection(status);
-            mc.SetToiletId(status.ToiletId);
             mc.OpenDeleteModal += ShowDeleteModal;
 
             for (int row = 0; row < tlpMainCard.RowCount; row++)
@@ -125,13 +125,13 @@ namespace CleanMonitor
         }
 
 
+
         private void ShowDeleteModal(object sender, string toiletId)
         {
             MainCard mc = sender as MainCard;
             if (mc == null) return;
 
             MainCardDeleteModal deleteModal = new MainCardDeleteModal();
-
 
             deleteModal.MainCardDelete += (s, args) =>
             {

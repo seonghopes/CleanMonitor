@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CleanMonitor.Models;
-using static System.Collections.Specialized.BitVector32;
 
 namespace CleanMonitor
 {
@@ -207,12 +206,9 @@ namespace CleanMonitor
         {
             mainSection.Text = status.MainSection;
             subSection.Text = status.SubSection;
+            ToiletId = status.ToiletId;
+            mainSection.Text = status.ToiletId;
         }
 
-        public void SetToiletId(string id)
-        {
-            ToiletId = id;
-            mainSection.Text = id; 
-        }
     }
 }
