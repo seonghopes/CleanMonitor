@@ -99,6 +99,7 @@ namespace CleanMonitor
                     if (ctrl != null && ctrl.Tag?.ToString() == "Dummy")
                     {
                         tlpMainCard.Controls.Remove(ctrl);
+                        ctrl.Dispose();
                         tlpMainCard.Controls.Add(mc.mainPanel, col, row);
 
                         if (!IdMapCard.ContainsKey(status.ToiletId))
@@ -137,6 +138,7 @@ namespace CleanMonitor
             deleteModal.MainCardDelete += (s, args) =>
             {
                 tlpMainCard.Controls.Remove(mc.mainPanel);
+                mc.mainPanel.Dispose();
 
                 IdMapCard.Remove(toiletId);
 
