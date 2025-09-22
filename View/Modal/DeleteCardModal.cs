@@ -10,15 +10,14 @@ using System.Windows.Forms;
 
 namespace CleanMonitor.View.Modal
 {
-    public partial class MainCardDeleteModal : Form
+    public partial class DeleteCardModal : Form
     {
         public event EventHandler MainCardDelete;
 
-        public MainCardDeleteModal()
+        public DeleteCardModal()
         {
             InitializeComponent();
-
-           
+            this.CancelButton = btnCancel;
         }
 
         private void btnDelCard_Click(object sender, EventArgs e)

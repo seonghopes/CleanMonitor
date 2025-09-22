@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CleanMonitor.Models;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using CleanMonitor.Models;
 
 namespace CleanMonitor
 {
@@ -14,6 +15,7 @@ namespace CleanMonitor
         public string ToiletId { get; private set; }
 
         public TableLayoutPanel mainPanel;
+        Panel btnPanel = new Panel();
 
         private PictureBox mainPic;
         
@@ -21,8 +23,10 @@ namespace CleanMonitor
         private Label subSection;
 
         public event EventHandler<string> OpenDeleteModal;
+        public event EventHandler OpenConnectModal;
 
         private Button deleteBtn;
+        private Button connectBtn;
 
         private Label statusCir1;
         private Label statusCir2;
@@ -42,10 +46,12 @@ namespace CleanMonitor
         private void InitUI()
         {
             this.mainPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnPanel = new System.Windows.Forms.Panel();
 
             this.mainPic = new System.Windows.Forms.PictureBox();
 
             this.deleteBtn = new System.Windows.Forms.Button();
+            this.connectBtn = new System.Windows.Forms.Button();
 
 
             this.mainSection = new System.Windows.Forms.Label();
@@ -70,7 +76,7 @@ namespace CleanMonitor
             mainPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
 
 
-            mainPanel.Controls.Add(this.deleteBtn, 2, 0);
+            mainPanel.Controls.Add(this.btnPanel, 2, 0);
             mainPanel.Controls.Add(this.mainPic, 0, 1);
             mainPanel.Controls.Add(this.statusCir1, 0, 5);
             mainPanel.Controls.Add(this.statusCir2, 1, 5);
@@ -96,17 +102,33 @@ namespace CleanMonitor
             mainPanel.SetColumnSpan(mainSection, 3);
             mainPanel.SetColumnSpan(subSection, 3);
 
-            deleteBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            deleteBtn.Size = new System.Drawing.Size(20, 20);
+            btnPanel.Dock = DockStyle.Top;
+            btnPanel.Height = 25; 
+            btnPanel.Controls.Add(deleteBtn);
+            btnPanel.Controls.Add(connectBtn);
+
+            deleteBtn.Dock = DockStyle.Right;
             deleteBtn.Text = "❌";
             deleteBtn.Cursor = Cursors.Hand;
             deleteBtn.FlatStyle = FlatStyle.Flat;
             deleteBtn.FlatAppearance.BorderSize = 0;
+            deleteBtn.Size = new System.Drawing.Size(25, 25);
 
             deleteBtn.Click += (s, e) =>
             {
                 OpenDeleteModal?.Invoke(this, ToiletId);
             };
+
+            connectBtn.Dock = DockStyle.Left;
+            connectBtn.Text = "🖧 포트 연결";
+            connectBtn.Cursor = Cursors.Hand;
+            connectBtn.Size = new System.Drawing.Size(85, 25);
+
+            connectBtn.Click += (s, e) =>
+            {
+                OpenConnectModal?.Invoke(this, EventArgs.Empty);
+            };
+
 
 
             mainPic.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -158,7 +180,7 @@ namespace CleanMonitor
             statusCir3.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusCir3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             statusCir3.Size = new System.Drawing.Size(25, 25);
-            statusCir3.Text = "3";                                                      //
+            statusCir3.Text = "0";                                                      //
             statusCir3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             statusCir3.Paint += (s, e) =>

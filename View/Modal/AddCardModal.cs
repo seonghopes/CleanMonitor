@@ -11,14 +11,15 @@ using System.Windows.Forms;
 
 namespace CleanMonitor.View.Modal
 {
-    public partial class MainCardAddModal : Form
+    public partial class AddCardModal : Form
     {
         public event EventHandler<ToiletStatus> MainCardAdd;
-        public MainCardAddModal()
+        public AddCardModal()
         {
             InitializeComponent();
 
-            this.AcceptButton = btnAdd; // 엔터키
+            this.AcceptButton = btnAdd; 
+            this.CancelButton = btnCancel;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)

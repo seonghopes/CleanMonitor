@@ -15,9 +15,10 @@ namespace CleanMonitor
         private Label statusCnt;
         private Label statusText;
 
-        public StatusCard(Color color, Image pic = null) 
+        public StatusCard(string Text, Color color, Image pic = null) 
         {
             InitUI(color,pic);
+            statusText.Text = Text;
         }
 
         private void InitUI(Color color,Image pic)
@@ -63,7 +64,7 @@ namespace CleanMonitor
             statusCnt.Dock = System.Windows.Forms.DockStyle.Fill;
             statusCnt.Font = new System.Drawing.Font("맑은 고딕", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             statusCnt.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            
+            statusCnt.Text = "0";
 
             statusText.AutoSize = true;
             statusText.Dock = System.Windows.Forms.DockStyle.Top;
@@ -75,15 +76,7 @@ namespace CleanMonitor
         public void SetCnt(int cnt)
         {
             statusCnt.Text = cnt.ToString();
-            //statusCnt.ForeColor = cntColor;
-            //statusCnt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
         }
-        public void SetText(string txt)
-        {
-            statusText.Text = txt;
-            //statusText.ForeColor = txtColor;
-        }
-
      
     }
 }

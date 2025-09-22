@@ -18,7 +18,7 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
-
+        private SerialPort serialPort;
         private List<ToiletStatus> toiletStatusList = new List<ToiletStatus>();
 
         private ToiletRepository repository = new ToiletRepository();
@@ -34,33 +34,26 @@ namespace CleanMonitor
             AddStuatusCard();
 
             LoadToiletStatusList();
-
         }
+        
         private void FormSizeInit()
         {
             this.WindowState = FormWindowState.Maximized;
-            this.MinimumSize = new Size(1024, 860);
+            this.MinimumSize = new Size(1280, 960);
             this.MaximumSize = new Size(1920, 1080);
         }
 
         public void AddStuatusCard()
         {
-            StatusCard statusCard1 = new StatusCard(Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
-            StatusCard statusCard2 = new StatusCard(Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
-            StatusCard statusCard3 = new StatusCard(Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
-            StatusCard statusCard4 = new StatusCard(Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
-            tlpStatusCard.Controls.Add(statusCard1.statusPanel, 0, 0);
-            tlpStatusCard.Controls.Add(statusCard2.statusPanel, 1, 0);
-            tlpStatusCard.Controls.Add(statusCard3.statusPanel, 2, 0);
-            tlpStatusCard.Controls.Add(statusCard4.statusPanel, 3, 0);
-            statusCard1.SetCnt(5);
-            statusCard2.SetCnt(7);
-            statusCard3.SetCnt(7);
-            statusCard4.SetCnt(14);
-            statusCard1.SetText("총 화장실");
-            statusCard2.SetText("교체 필요");
-            statusCard3.SetText("주의 필요");
-            statusCard4.SetText("정상 상태");
+
+            StatusCard all = new StatusCard("총 화장실", Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
+            StatusCard siren = new StatusCard("교체 필요", Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
+            StatusCard wran = new StatusCard("주의 상태", Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
+            StatusCard check = new StatusCard("정상 상태",Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
+            tlpStatusCard.Controls.Add(all.statusPanel, 0, 0);
+            tlpStatusCard.Controls.Add(siren.statusPanel, 1, 0);
+            tlpStatusCard.Controls.Add(wran.statusPanel, 2, 0);
+            tlpStatusCard.Controls.Add(check.statusPanel, 3, 0);
         }
 
         private void AddDummyCard()
@@ -85,12 +78,13 @@ namespace CleanMonitor
             }
         }
 
- 
+
         private void AddMainCard(ToiletStatus status)
         {
             MainCard mc = new MainCard();
             mc.SetSection(status);
             mc.OpenDeleteModal += ShowDeleteModal;
+            mc.OpenConnectModal += ShowConnectModal;
 
             for (int row = 0; row < tlpMainCard.RowCount; row++)
                 for (int col = 0; col < tlpMainCard.ColumnCount; col++)
@@ -113,7 +107,7 @@ namespace CleanMonitor
 
         private void ShowAddModal(object sender, EventArgs e)
         {
-            MainCardAddModal addModal = new MainCardAddModal();
+            AddCardModal addModal = new AddCardModal();
 
             addModal.MainCardAdd += (s, status) =>
             {
@@ -125,6 +119,14 @@ namespace CleanMonitor
             addModal.ShowDialog();
         }
 
+        private void ShowConnectModal(object sender, EventArgs e)
+        {
+            ConnectPortModal connectModal = new ConnectPortModal();
+
+            // 이벤트 등록
+
+            connectModal.ShowDialog();
+        }
 
 
         private void ShowDeleteModal(object sender, string toiletId)
@@ -133,7 +135,7 @@ namespace CleanMonitor
 
             MainCard mc = IdMapCard[toiletId];
 
-            MainCardDeleteModal deleteModal = new MainCardDeleteModal();
+            DeleteCardModal deleteModal = new DeleteCardModal();
 
             deleteModal.MainCardDelete += (s, args) =>
             {

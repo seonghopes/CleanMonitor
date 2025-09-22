@@ -1,6 +1,6 @@
 ﻿namespace CleanMonitor.View.Modal
 {
-    partial class MainCardAddModal
+    partial class AddCardModal
     {
         /// <summary>
         /// Required designer variable.
