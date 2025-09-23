@@ -36,7 +36,6 @@
             this.tlpStatusCard = new System.Windows.Forms.TableLayoutPanel();
             this.tlpHead.SuspendLayout();
             this.pHead.SuspendLayout();
-            this.tlpMainCard.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpHead
@@ -103,7 +102,6 @@
             this.tlpMainCard.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMainCard.Size = new System.Drawing.Size(1184, 323);
             this.tlpMainCard.TabIndex = 1;
-
             // 
             // tlpStatusCard
             // 
@@ -132,10 +130,10 @@
             this.Controls.Add(this.tlpHead);
             this.Name = "DashbordForm";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DashbordForm_FormClosing);
             this.tlpHead.ResumeLayout(false);
             this.pHead.ResumeLayout(false);
             this.pHead.PerformLayout();
-            this.tlpMainCard.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

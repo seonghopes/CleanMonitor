@@ -55,7 +55,9 @@
     <Compile Include="DashbordForm.Designer.cs">
       <DependentUpon>DashbordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ToiletPort.cs" />
     <Compile Include="Models\ToiletStatus.cs" />
+    <Compile Include="Repository\PortRepository.cs" />
     <Compile Include="Repository\ToiletRepository.cs" />
     <Compile Include="Services\BltService.cs" />
     <Compile Include="View\DummyCard.cs">

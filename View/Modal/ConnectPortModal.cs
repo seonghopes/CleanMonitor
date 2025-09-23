@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CleanMonitor.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,9 +14,13 @@ namespace CleanMonitor.View.Modal
 {
     public partial class ConnectPortModal : Form
     {
-        public ConnectPortModal()
+        public event EventHandler<ConnectPortEventArgs> PortConnected;
+        private readonly string toiletId;
+
+        public ConnectPortModal(string toiletId)
         {
             InitializeComponent();
+            this.toiletId = toiletId; 
             LoadComPorts();
         }
 
@@ -39,15 +44,29 @@ namespace CleanMonitor.View.Modal
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            if (cbPort.SelectedItem != null)
+            if (cbPort.SelectedItem == null || cbPort.SelectedItem.ToString() == "포트 없음")
             {
-                string selectedPort = cbPort.SelectedItem.ToString();
-                MessageBox.Show($"선택된 포트: {selectedPort}");
+                MessageBox.Show("연결가능한 포트가 없습니다.");
+                return;
             }
+
+            string selectedPort = cbPort.SelectedItem.ToString();
+
+            PortConnected?.Invoke(this, new ConnectPortEventArgs
+            {
+                ToiletId = toiletId,
+                PortName = selectedPort
+            });
+
+            this.Close();
         }
 
-        private void cbPort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
+      
+    }
+
+    public class ConnectPortEventArgs : EventArgs
+    {
+        public string ToiletId { get; set; }
+        public string PortName { get; set; }
     }
 }

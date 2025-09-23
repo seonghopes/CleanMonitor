@@ -229,8 +229,11 @@ namespace CleanMonitor
             mainSection.Text = status.MainSection;
             subSection.Text = status.SubSection;
             ToiletId = status.ToiletId;
-            mainSection.Text = status.ToiletId;
         }
 
+        public void SetData(string data)
+        {
+            updateTime.Text = data;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CleanMonitor.Models;
 using CleanMonitor.Repository;
+using CleanMonitor.Services;
 using CleanMonitor.View.Modal;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,14 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
-        private SerialPort serialPort;
-        private List<ToiletStatus> toiletStatusList = new List<ToiletStatus>();
-
         private ToiletRepository repository = new ToiletRepository();
-
+        private List<ToiletStatus> toiletStatusList = new List<ToiletStatus>();
         private Dictionary<string, MainCard> IdMapCard = new Dictionary<string, MainCard>();
+
+        private PortRepository portRepository = new PortRepository();
+        private List<ToiletPort> toiletPorts = new List<ToiletPort>();
+
+        private List<BltService> bltServices = new List<BltService>();
 
         public DashbordForm()
         {
@@ -33,7 +36,7 @@ namespace CleanMonitor
             AddDummyCard();
             AddStuatusCard();
 
-            LoadToiletStatusList();
+            LoadMainCardList();
         }
         
         private void FormSizeInit()
@@ -69,12 +72,32 @@ namespace CleanMonitor
                 }
         }
 
-        private void LoadToiletStatusList()
+        private void LoadMainCardList()
         {
             toiletStatusList = repository.LoadAll();
             foreach (ToiletStatus status in toiletStatusList)
             {
                 AddMainCard(status);
+            }
+
+            toiletPorts = portRepository.LoadAll();
+            foreach (ToiletPort tp in toiletPorts)
+            {
+                    if (IdMapCard.ContainsKey(tp.ToiletId))
+                {
+                    BltService bltService = new BltService(tp.ToiletId, tp.PortName);
+                    bltService.serialEvent += (s, data) =>
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            if (IdMapCard.ContainsKey(tp.ToiletId))
+                            {
+                                IdMapCard[tp.ToiletId].SetData(data);
+                            }
+                        }));
+                    };
+                    bltServices.Add(bltService);
+                }
             }
         }
 
@@ -121,11 +144,44 @@ namespace CleanMonitor
 
         private void ShowConnectModal(object sender, EventArgs e)
         {
-            ConnectPortModal connectModal = new ConnectPortModal();
+            MainCard mc = sender as MainCard;
 
-            // 이벤트 등록
+            if (mc != null)
+            {
+                ConnectPortModal connectModal = new ConnectPortModal(mc.ToiletId);
+                connectModal.PortConnected += ConnectModal_PortConnected;
 
-            connectModal.ShowDialog();
+                connectModal.ShowDialog();
+            }
+            
+        }
+
+        private void ConnectModal_PortConnected(object sender, ConnectPortEventArgs args)
+        {
+            toiletPorts.RemoveAll(p => p.ToiletId == args.ToiletId);
+
+            ToiletPort newMapping = new ToiletPort
+            {
+                ToiletId = args.ToiletId,
+                PortName = args.PortName
+            };
+
+            toiletPorts.Add(newMapping);
+
+            portRepository.SaveAll(toiletPorts);
+
+            BltService bltService = new BltService(args.ToiletId, args.PortName);
+            bltService.serialEvent += (s, data) =>
+            {
+                this.Invoke(new Action(() =>
+                {
+                    if (IdMapCard.ContainsKey(args.ToiletId))
+                    {
+                        IdMapCard[args.ToiletId].SetData(data);
+                    }
+                }));
+            };
+            bltServices.Add(bltService);
         }
 
 
@@ -151,6 +207,16 @@ namespace CleanMonitor
                     repository.SaveAll(toiletStatusList);
                 }
 
+                BltService service = bltServices.FirstOrDefault(b => b.ToiletId == toiletId);
+                if (service != null)
+                {
+                    service.Close();
+                    bltServices.Remove(service);
+                }
+
+                toiletPorts.RemoveAll(p => p.ToiletId == toiletId);
+                portRepository.SaveAll(toiletPorts);
+
                 TableLayoutPanelCellPosition pos = tlpMainCard.GetPositionFromControl(mc.mainPanel);
                 DummyCard dummyCard = new DummyCard();
                 dummyCard.OpenAddModal += ShowAddModal;
@@ -160,6 +226,11 @@ namespace CleanMonitor
             deleteModal.ShowDialog();
         }
 
+        private void DashbordForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (BltService service in bltServices)
+                service.Close();
+        }
 
         private Image LoadImageSafe(string path)
         {
@@ -180,5 +251,7 @@ namespace CleanMonitor
                 return null;
             }
         }
+
+        
     }
 }
