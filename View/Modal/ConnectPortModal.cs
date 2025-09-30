@@ -16,11 +16,13 @@ namespace CleanMonitor.View.Modal
     {
         public event EventHandler<ConnectPortEventArgs> PortConnected;
         private readonly string toiletId;
+        private readonly string usedPort;
 
-        public ConnectPortModal(string toiletId)
+        public ConnectPortModal(string toiletId, string usedPort)
         {
             InitializeComponent();
             this.toiletId = toiletId; 
+            this.usedPort = usedPort; 
             LoadComPorts();
         }
 
@@ -37,8 +39,18 @@ namespace CleanMonitor.View.Modal
             }
             else
             {
-                cbPort.Items.AddRange(ports);
-                cbPort.SelectedIndex = 0;
+                int selectedIndex = 0; 
+
+                for (int i = 0; i < ports.Length; i++)
+                {
+                    cbPort.Items.Add(ports[i]);
+                    if (usedPort != null && ports[i] == usedPort)
+                    {
+                        selectedIndex = i;
+                    }
+                }
+                cbPort.SelectedIndex = selectedIndex;
+
             }
         }
 

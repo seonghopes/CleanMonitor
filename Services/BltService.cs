@@ -13,10 +13,12 @@ namespace CleanMonitor.Services
 
         public event EventHandler<string> serialEvent;
         public string ToiletId { get; private set; }
+        public string PortName { get; private set; }
 
         public BltService(string toiletId, string port)
         {
             this.ToiletId = toiletId;
+            this.PortName = port;
             serialPort = new SerialPort(port, 9600);
             serialPort.DataReceived += SerialPort_DataReceived;
 

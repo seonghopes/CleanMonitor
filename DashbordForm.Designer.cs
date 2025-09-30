@@ -30,7 +30,6 @@
         {
             this.tlpHead = new System.Windows.Forms.TableLayoutPanel();
             this.pHead = new System.Windows.Forms.Panel();
-            this.lblDist = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tlpMainCard = new System.Windows.Forms.TableLayoutPanel();
             this.tlpStatusCard = new System.Windows.Forms.TableLayoutPanel();
@@ -54,22 +53,12 @@
             // 
             // pHead
             // 
-            this.pHead.Controls.Add(this.lblDist);
             this.pHead.Controls.Add(this.label1);
             this.pHead.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pHead.Location = new System.Drawing.Point(3, 3);
             this.pHead.Name = "pHead";
             this.pHead.Size = new System.Drawing.Size(1178, 52);
             this.pHead.TabIndex = 0;
-            // 
-            // lblDist
-            // 
-            this.lblDist.AutoSize = true;
-            this.lblDist.Location = new System.Drawing.Point(491, 31);
-            this.lblDist.Name = "lblDist";
-            this.lblDist.Size = new System.Drawing.Size(38, 12);
-            this.lblDist.TabIndex = 2;
-            this.lblDist.Text = "label2";
             // 
             // label1
             // 
@@ -144,7 +133,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tlpMainCard;
         private System.Windows.Forms.TableLayoutPanel tlpStatusCard;
-        private System.Windows.Forms.Label lblDist;
     }
 }
 
