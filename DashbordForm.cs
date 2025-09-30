@@ -71,77 +71,50 @@ namespace CleanMonitor
                     tlpMainCard.Controls.Add(dummyCard.dummyPanel, col, row);
                 }
         }
+
         private void LoadMainCardList()
         {
-            toiletStatusList = repository.LoadAll();
-            foreach (ToiletStatus status in toiletStatusList)
+            Task.Run(() =>
             {
-                AddMainCard(status);
-            }
+                List<ToiletStatus> tss = repository.LoadAll();
+                List<ToiletPort> tps = portRepository.LoadAll();
 
-            toiletPorts = portRepository.LoadAll();
-            foreach (ToiletPort tp in toiletPorts)
-            {
-                if (IdMapCard.ContainsKey(tp.ToiletId))
-                {
-                    BltService bltService = new BltService(tp.ToiletId, tp.PortName);
-                    bltService.serialEvent += (s, data) =>
+                this.BeginInvoke(new Action(() =>
                     {
-                        this.Invoke(new Action(() =>
+                        toiletStatusList = tss;
+                        toiletPorts = tps;
+
+                        foreach (ToiletStatus status in toiletStatusList)
+                        {
+                            AddMainCard(status);
+                        }
+
+                        foreach (ToiletPort tp in toiletPorts)
                         {
                             if (IdMapCard.ContainsKey(tp.ToiletId))
                             {
-                                IdMapCard[tp.ToiletId].SetData(data);
+                                BltService bltService = new BltService(tp.ToiletId, tp.PortName);
+                                bltService.serialEvent += (s, data) =>
+                                {
+                                    // 이벤트 호출 스레드가 UI 스레드가 아님
+                                    // BeginInvoke (비동기),  Invoke (동기)
+                                    this.BeginInvoke(new Action(() =>
+                                    {
+                                        if (IdMapCard.ContainsKey(tp.ToiletId))
+                                        {
+                                            IdMapCard[tp.ToiletId].SetData(data);
+                                        }
+                                    }));
+                                };
+                                bltServices.Add(bltService);
                             }
-                        }));
-                    };
-                    bltServices.Add(bltService);
-                }
-            }
+                        }
+
+                    }));
+
+            });
+
         }
-        //private void LoadMainCardList()
-        //{
-        //    Task.Run(() =>
-        //    {
-        //        List<ToiletStatus> tss = repository.LoadAll();
-        //        List<ToiletPort> tps = portRepository.LoadAll();
-
-        //        this.BeginInvoke(new Action(() =>
-        //            {
-        //                toiletStatusList = tss;
-        //                toiletPorts = tps;
-
-        //                foreach (ToiletStatus status in toiletStatusList)
-        //                {
-        //                    AddMainCard(status);
-        //                }
-
-        //                foreach (ToiletPort tp in toiletPorts)
-        //                {
-        //                    if (IdMapCard.ContainsKey(tp.ToiletId))
-        //                    {
-        //                        BltService bltService = new BltService(tp.ToiletId, tp.PortName);
-        //                        bltService.serialEvent += (s, data) =>
-        //                        {
-        //                            // 이벤트 호출 스레드가 UI 스레드가 아님
-        //                            // BeginInvoke (비동기),  Invoke (동기)
-        //                            this.BeginInvoke(new Action(() =>
-        //                            {
-        //                                if (IdMapCard.ContainsKey(tp.ToiletId))
-        //                                {
-        //                                    IdMapCard[tp.ToiletId].SetData(data);
-        //                                }
-        //                            }));
-        //                        };
-        //                        bltServices.Add(bltService);
-        //                    }
-        //                }
-
-        //            }));
-
-        //    });
-
-        //}
 
 
         private void AddMainCard(ToiletStatus status)
@@ -203,13 +176,15 @@ namespace CleanMonitor
 
         private void ConnectModal_PortConnected(object sender, ConnectPortEventArgs args)
         {
-            toiletPorts.RemoveAll(t => t.ToiletId == args.ToiletId);
 
-            if (bltServices.Any(p => p.PortName == args.PortName))
+            if (toiletPorts.Any(p => p.PortName == args.PortName && p.ToiletId != args.ToiletId))
             {
                 MessageBox.Show($"포트 {args.PortName}은 이미 다른 화장실에 연결되어 있습니다.");
                 return;
             }
+
+            toiletPorts.RemoveAll(t => t.ToiletId == args.ToiletId);
+          
 
             ToiletPort newMapping = new ToiletPort
             {
