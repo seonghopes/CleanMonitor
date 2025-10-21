@@ -9,7 +9,6 @@ using System.Windows.Forms;
 
 namespace CleanMonitor
 {
-
     class MainCard : UserControl
     {
         public string ToiletId { get; private set; }
@@ -223,6 +222,10 @@ namespace CleanMonitor
         {
             mainPanel.BorderStyle = BorderStyle.FixedSingle;
         }
+        public void ChangeBorader2()
+        {
+            mainPanel.BorderStyle = BorderStyle.None;
+        }
 
         public void SetSection(ToiletStatus status)
         {
@@ -233,6 +236,30 @@ namespace CleanMonitor
 
         public void SetData(string data)
         {
+            int dist = int.Parse(data.Substring(2));
+           if (dist < 100 && 1 < dist)
+            {  // 정상
+                statusCir1.Text = "0";
+                statusCir2.Text = "0";
+                statusCir3.Text = "1";
+                ChangeBorader2();
+            }
+            else if(dist >= 100 && dist < 150)
+            { // 주의
+                statusCir1.Text = "0";
+                statusCir2.Text = "1";
+                statusCir3.Text = "0";
+                ChangeBorader2();
+            }
+            else if(dist >= 150)
+            {
+                // 교체
+                statusCir1.Text = "1";
+                statusCir2.Text = "0";
+                statusCir3.Text = "0";
+                ChangeBorader();
+            }
+
             updateTime.Text = data;
         }
     }

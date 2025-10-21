@@ -15,6 +15,7 @@ namespace CleanMonitor
         private Label statusCnt;
         private Label statusText;
 
+        private int cnt = 0; 
         public StatusCard(string Text, Color color, Image pic = null) 
         {
             InitUI(color,pic);
@@ -73,10 +74,28 @@ namespace CleanMonitor
 
         }
 
-        public void SetCnt(int cnt)
+
+        public void Increment()
+        {
+            cnt++;
+            UpdateLabel();
+        }
+
+        public void Decrement()
+        {
+            if (cnt > 0)
+                cnt--;
+            UpdateLabel();
+        }
+
+        private void UpdateLabel()
         {
             statusCnt.Text = cnt.ToString();
         }
-     
+
+        public int GetCount()
+        {
+            return cnt;
+        }
     }
 }

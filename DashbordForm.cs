@@ -19,6 +19,12 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
+        private StatusCard allStatusCard;
+        private StatusCard sirenStatusCard;
+        private StatusCard wranStatusCard;
+        private StatusCard checkStatusCard;
+
+
         private ToiletRepository repository = new ToiletRepository();
         private List<ToiletStatus> toiletStatusList = new List<ToiletStatus>();
         private Dictionary<string, MainCard> IdMapCard = new Dictionary<string, MainCard>();
@@ -49,14 +55,14 @@ namespace CleanMonitor
         public void AddStuatusCard()
         {
 
-            StatusCard all = new StatusCard("총 화장실", Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
-            StatusCard siren = new StatusCard("교체 필요", Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
-            StatusCard wran = new StatusCard("주의 상태", Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
-            StatusCard check = new StatusCard("정상 상태",Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
-            tlpStatusCard.Controls.Add(all.statusPanel, 0, 0);
-            tlpStatusCard.Controls.Add(siren.statusPanel, 1, 0);
-            tlpStatusCard.Controls.Add(wran.statusPanel, 2, 0);
-            tlpStatusCard.Controls.Add(check.statusPanel, 3, 0);
+            allStatusCard = new StatusCard("총 화장실", Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
+            sirenStatusCard = new StatusCard("교체 필요", Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
+            wranStatusCard = new StatusCard("주의 상태", Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
+            checkStatusCard = new StatusCard("정상 상태",Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
+            tlpStatusCard.Controls.Add(allStatusCard.statusPanel, 0, 0);
+            tlpStatusCard.Controls.Add(sirenStatusCard.statusPanel, 1, 0);
+            tlpStatusCard.Controls.Add(wranStatusCard.statusPanel, 2, 0);
+            tlpStatusCard.Controls.Add(checkStatusCard.statusPanel, 3, 0);
         }
 
         private void AddDummyCard()
@@ -137,6 +143,7 @@ namespace CleanMonitor
                         if (!IdMapCard.ContainsKey(status.ToiletId))
                             IdMapCard.Add(status.ToiletId, mc);
 
+                        allStatusCard.Increment();
                         return;
                     }
                 }
@@ -199,7 +206,7 @@ namespace CleanMonitor
             BltService bltService = new BltService(args.ToiletId, args.PortName);
             bltService.serialEvent += (s, data) =>
             {
-                this.Invoke(new Action(() =>
+                this.BeginInvoke(new Action(() =>
                 {
                     if (IdMapCard.ContainsKey(args.ToiletId))
                     {
@@ -247,6 +254,8 @@ namespace CleanMonitor
                 DummyCard dummyCard = new DummyCard();
                 dummyCard.OpenAddModal += ShowAddModal;
                 tlpMainCard.Controls.Add(dummyCard.dummyPanel, pos.Column, pos.Row);
+
+                allStatusCard.Decrement();
             };
 
             deleteModal.ShowDialog();
@@ -277,7 +286,5 @@ namespace CleanMonitor
                 return null;
             }
         }
-
-        
     }
 }
