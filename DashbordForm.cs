@@ -32,7 +32,7 @@ namespace CleanMonitor
         private PortRepository portRepository = new PortRepository();
         private List<ToiletPort> toiletPorts = new List<ToiletPort>();
 
-        private List<BltService> bltServices = new List<BltService>();
+        private List<TcpReceiveService> tcpReceiveServices = new List<TcpReceiveService>();
 
         public DashbordForm()
         {
@@ -99,8 +99,8 @@ namespace CleanMonitor
                         {
                             if (IdMapCard.ContainsKey(tp.ToiletId))
                             {
-                                BltService bltService = new BltService(tp.ToiletId, tp.PortName);
-                                bltService.serialEvent += (s, data) =>
+                                TcpReceiveService tcpReceiveService = new TcpReceiveService(tp.ToiletId, tp.PortName);
+                                tcpReceiveService.dataReceived += (s, data) =>
                                 {
                                     // 이벤트 호출 스레드가 UI 스레드가 아님
                                     // BeginInvoke (비동기),  Invoke (동기)
@@ -112,7 +112,7 @@ namespace CleanMonitor
                                         }
                                     }));
                                 };
-                                bltServices.Add(bltService);
+                                tcpReceiveServices.Add(tcpReceiveService);
                             }
                         }
 
@@ -203,8 +203,8 @@ namespace CleanMonitor
 
             portRepository.SaveAll(toiletPorts);
 
-            BltService bltService = new BltService(args.ToiletId, args.PortName);
-            bltService.serialEvent += (s, data) =>
+            TcpReceiveService tcpReceiveService = new TcpReceiveService(args.ToiletId, args.PortName);
+            tcpReceiveService.dataReceived += (s, data) =>
             {
                 this.BeginInvoke(new Action(() =>
                 {
@@ -214,7 +214,7 @@ namespace CleanMonitor
                     }
                 }));
             };
-            bltServices.Add(bltService);
+            tcpReceiveServices.Add(tcpReceiveService);
         }
 
 
@@ -240,11 +240,11 @@ namespace CleanMonitor
                     repository.SaveAll(toiletStatusList);
                 }
 
-                BltService service = bltServices.FirstOrDefault(b => b.ToiletId == toiletId);
+                TcpReceiveService service = tcpReceiveServices.FirstOrDefault(b => b.ToiletId == toiletId);
                 if (service != null)
                 {
                     service.Close();
-                    bltServices.Remove(service);
+                    tcpReceiveServices.Remove(service);
                 }
 
                 toiletPorts.RemoveAll(p => p.ToiletId == toiletId);
@@ -263,7 +263,7 @@ namespace CleanMonitor
 
         private void DashbordForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (BltService service in bltServices)
+            foreach (TcpReceiveService service in tcpReceiveServices)
                 service.Close();
         }
 

@@ -61,6 +61,7 @@
     <Compile Include="Repository\PortRepository.cs" />
     <Compile Include="Repository\ToiletRepository.cs" />
     <Compile Include="Services\BltService.cs" />
+    <Compile Include="Services\TcpReceiveService.cs" />
     <Compile Include="View\DummyCard.cs">
       <SubType>UserControl</SubType>
     </Compile>
