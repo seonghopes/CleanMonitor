@@ -237,21 +237,21 @@ namespace CleanMonitor
         public void SetData(string data)
         {
             int dist = int.Parse(data.Substring(2));
-           if (dist < 100 && 1 < dist)
+            if (dist < 100 && 1 < dist)
             {  // 정상
                 statusCir1.Text = "0";
                 statusCir2.Text = "0";
                 statusCir3.Text = "1";
                 ChangeBorader2();
             }
-            else if(dist >= 100 && dist < 150)
+            else if (dist >= 100 && dist < 150)
             { // 주의
                 statusCir1.Text = "0";
                 statusCir2.Text = "1";
                 statusCir3.Text = "0";
                 ChangeBorader2();
             }
-            else if(dist >= 150)
+            else if (dist >= 150)
             {
                 // 교체
                 statusCir1.Text = "1";
