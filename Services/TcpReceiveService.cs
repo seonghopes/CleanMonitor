@@ -15,15 +15,13 @@ namespace CleanMonitor.Services
         public event EventHandler<string> dataReceived;
 
         public string ToiletId { get; private set; }
-        public string PortName { get; private set; }
 
         private TcpListener server;
         private CancellationTokenSource cts;
 
-        public TcpReceiveService(string toiletId, string port)
+        public TcpReceiveService(string toiletId)
         {
             ToiletId = toiletId;
-            PortName = port;
 
             cts = new CancellationTokenSource();
             Task.Run(() => StartServer(cts.Token));

@@ -97,5 +97,11 @@ namespace CleanMonitor
         {
             return cnt;
         }
+
+        public void SetCount(int val)
+        {
+            if (val == 0) statusCnt.Text = "0";
+            statusCnt.Text = val.ToString();
+        }
     }
 }

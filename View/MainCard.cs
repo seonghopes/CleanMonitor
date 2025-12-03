@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,9 +39,14 @@ namespace CleanMonitor
 
         private Label updateTime;
 
+        private List<ArduinoSensor> sensors = new List<ArduinoSensor>();
+
         public MainCard() 
         {
             InitUI();
+
+            sensors.Add(new ArduinoSensor("dA", 100, 150));
+            sensors.Add(new ArduinoSensor("lA", 1, 2));
         }
 
         private void InitUI()
@@ -129,10 +136,11 @@ namespace CleanMonitor
             };
 
 
-
             mainPic.Anchor = System.Windows.Forms.AnchorStyles.None;
-            mainPic.BackColor = System.Drawing.Color.LightGray;
+            mainPic.BackColor = System.Drawing.Color.Transparent;
             mainPic.Size = new System.Drawing.Size(150, 100);
+            mainPic.Image = Image.FromFile(@"C:\Images\toilet_main2.png");
+            mainPic.SizeMode = PictureBoxSizeMode.CenterImage;
 
             mainSection.AutoSize = true;
             mainSection.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -213,7 +221,7 @@ namespace CleanMonitor
             updateTime.Dock = System.Windows.Forms.DockStyle.Fill;
             updateTime.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             updateTime.ForeColor = System.Drawing.Color.Gray;
-            updateTime.Text = "n분전";                                                      //
+            updateTime.Text = "n분전";                                                     
             updateTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         }
 
@@ -236,31 +244,51 @@ namespace CleanMonitor
 
         public void SetData(string data)
         {
-            int dist = int.Parse(data.Substring(2));
-            if (dist < 100 && 1 < dist)
-            {  // 정상
-                statusCir1.Text = "0";
-                statusCir2.Text = "0";
-                statusCir3.Text = "1";
-                ChangeBorader2();
-            }
-            else if (dist >= 100 && dist < 150)
-            { // 주의
-                statusCir1.Text = "0";
-                statusCir2.Text = "1";
-                statusCir3.Text = "0";
-                ChangeBorader2();
-            }
-            else if (dist >= 150)
+            try
             {
-                // 교체
-                statusCir1.Text = "1";
-                statusCir2.Text = "0";
-                statusCir3.Text = "0";
-                ChangeBorader();
-            }
+                MatchCollection matches = Regex.Matches(data, @"([dl])([A-Z])(\d+)");
 
-            updateTime.Text = data;
+                foreach (Match m in matches)
+                {
+                    string type = m.Groups[1].Value; // d or l
+                    string id = m.Groups[2].Value;   // A, B, C
+                    int value = int.Parse(m.Groups[3].Value);
+
+                    string sensorName = type + id;   // 예: dA, lB
+
+                    ArduinoSensor sensor = sensors.FirstOrDefault(s => s.Name == sensorName);
+                    if (sensor != null)
+                        sensor.UpdateValue(value);
+
+                    UpdateStatusCircles();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"데이터 처리 중 오류 발생: {ex.Message}");
+            }
+        }
+
+        private void UpdateStatusCircles()
+        {
+            int normalCount = sensors.Count(s => s.Level == SensorLevel.Normal);
+            int warningCount = sensors.Count(s => s.Level == SensorLevel.Warning);
+            int criticalCount = sensors.Count(s => s.Level == SensorLevel.Critical);
+
+            if (criticalCount > 0)
+                ChangeBorader();
+            else ChangeBorader2();
+
+            statusCir1.Text = criticalCount.ToString();
+            statusCir2.Text = warningCount.ToString(); 
+            statusCir3.Text = normalCount.ToString();    
+        }
+
+        public int SensorsCount(SensorLevel level)
+        {
+            // UI 스레드에서만 호출되므로 lock 불필요
+            return sensors.Count(s => s.Level == level);
         }
     }
 }

@@ -19,6 +19,8 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
+        private Timer dashboardTimer; // 전체 집계용 타이머
+
         private StatusCard allStatusCard;
         private StatusCard sirenStatusCard;
         private StatusCard wranStatusCard;
@@ -32,7 +34,7 @@ namespace CleanMonitor
         private PortRepository portRepository = new PortRepository();
         private List<ToiletPort> toiletPorts = new List<ToiletPort>();
 
-        private List<TcpReceiveService> tcpReceiveServices = new List<TcpReceiveService>();
+        private List<BltService> bltServices = new List<BltService>();
 
         public DashbordForm()
         {
@@ -43,8 +45,38 @@ namespace CleanMonitor
             AddStuatusCard();
 
             LoadMainCardList();
+
+            StartDashboardTimer();
         }
-        
+        private void StartDashboardTimer()
+        {
+            // UI 스레드에서 동작하는 Windows Forms Timer
+            dashboardTimer = new Timer();
+            dashboardTimer.Interval = 1000; // 1초마다 갱신
+            dashboardTimer.Tick += DashboardTimer_Tick;
+            dashboardTimer.Start();
+        }
+
+        private void DashboardTimer_Tick(object sender, EventArgs e)
+        {
+            int totalNormal = 0;
+            int totalWarning = 0;
+            int totalCritical = 0;
+
+            // MainCard 개별 센서 상태 집계
+            foreach (MainCard mc in IdMapCard.Values)
+            {
+                totalNormal += mc.SensorsCount(SensorLevel.Normal);
+                totalWarning += mc.SensorsCount(SensorLevel.Warning);
+                totalCritical += mc.SensorsCount(SensorLevel.Critical);
+            }
+
+            // StatusCard UI 갱신
+            checkStatusCard.SetCount(totalNormal);
+            wranStatusCard.SetCount(totalWarning);
+            sirenStatusCard.SetCount(totalCritical);
+        }
+
         private void FormSizeInit()
         {
             this.WindowState = FormWindowState.Maximized;
@@ -58,7 +90,7 @@ namespace CleanMonitor
             allStatusCard = new StatusCard("총 화장실", Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
             sirenStatusCard = new StatusCard("교체 필요", Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
             wranStatusCard = new StatusCard("주의 상태", Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
-            checkStatusCard = new StatusCard("정상 상태",Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
+            checkStatusCard = new StatusCard("정상 상태", Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
             tlpStatusCard.Controls.Add(allStatusCard.statusPanel, 0, 0);
             tlpStatusCard.Controls.Add(sirenStatusCard.statusPanel, 1, 0);
             tlpStatusCard.Controls.Add(wranStatusCard.statusPanel, 2, 0);
@@ -86,37 +118,37 @@ namespace CleanMonitor
                 List<ToiletPort> tps = portRepository.LoadAll();
 
                 this.BeginInvoke(new Action(() =>
+                {
+                    toiletStatusList = tss;
+                    toiletPorts = tps;
+
+                    foreach (ToiletStatus status in toiletStatusList)
                     {
-                        toiletStatusList = tss;
-                        toiletPorts = tps;
+                        AddMainCard(status);
+                    }
 
-                        foreach (ToiletStatus status in toiletStatusList)
+                    foreach (ToiletPort tp in toiletPorts)
+                    {
+                        if (IdMapCard.ContainsKey(tp.ToiletId))
                         {
-                            AddMainCard(status);
-                        }
-
-                        foreach (ToiletPort tp in toiletPorts)
-                        {
-                            if (IdMapCard.ContainsKey(tp.ToiletId))
+                            BltService bltService = new BltService(tp.ToiletId, tp.PortName);
+                            bltService.serialEvent += (s, data) =>
                             {
-                                TcpReceiveService tcpReceiveService = new TcpReceiveService(tp.ToiletId, tp.PortName);
-                                tcpReceiveService.dataReceived += (s, data) =>
+                                // 이벤트 호출 스레드가 UI 스레드가 아님
+                                // BeginInvoke (비동기),  Invoke (동기)
+                                this.BeginInvoke(new Action(() =>
                                 {
-                                    // 이벤트 호출 스레드가 UI 스레드가 아님
-                                    // BeginInvoke (비동기),  Invoke (동기)
-                                    this.BeginInvoke(new Action(() =>
+                                    if (IdMapCard.ContainsKey(tp.ToiletId))
                                     {
-                                        if (IdMapCard.ContainsKey(tp.ToiletId))
-                                        {
-                                            IdMapCard[tp.ToiletId].SetData(data);
-                                        }
-                                    }));
-                                };
-                                tcpReceiveServices.Add(tcpReceiveService);
-                            }
+                                        IdMapCard[tp.ToiletId].SetData(data);
+                                    }
+                                }));
+                            };
+                            bltServices.Add(bltService);
                         }
+                    }
 
-                    }));
+                }));
 
             });
 
@@ -172,7 +204,7 @@ namespace CleanMonitor
             {
                 string usedPort = toiletPorts.Where(p => p.ToiletId == mc.ToiletId)
                                              .Select(p => p.PortName)
-                                             .FirstOrDefault(); 
+                                             .FirstOrDefault();
 
                 ConnectPortModal connectModal = new ConnectPortModal(mc.ToiletId, usedPort);
                 connectModal.PortConnected += ConnectModal_PortConnected;
@@ -191,7 +223,7 @@ namespace CleanMonitor
             }
 
             toiletPorts.RemoveAll(t => t.ToiletId == args.ToiletId);
-          
+
 
             ToiletPort newMapping = new ToiletPort
             {
@@ -203,8 +235,8 @@ namespace CleanMonitor
 
             portRepository.SaveAll(toiletPorts);
 
-            TcpReceiveService tcpReceiveService = new TcpReceiveService(args.ToiletId, args.PortName);
-            tcpReceiveService.dataReceived += (s, data) =>
+            BltService bltService = new BltService(args.ToiletId, args.PortName);
+            bltService.serialEvent += (s, data) =>
             {
                 this.BeginInvoke(new Action(() =>
                 {
@@ -214,7 +246,7 @@ namespace CleanMonitor
                     }
                 }));
             };
-            tcpReceiveServices.Add(tcpReceiveService);
+            bltServices.Add(bltService);
         }
 
 
@@ -240,11 +272,11 @@ namespace CleanMonitor
                     repository.SaveAll(toiletStatusList);
                 }
 
-                TcpReceiveService service = tcpReceiveServices.FirstOrDefault(b => b.ToiletId == toiletId);
+                BltService service = bltServices.FirstOrDefault(b => b.ToiletId == toiletId);
                 if (service != null)
                 {
                     service.Close();
-                    tcpReceiveServices.Remove(service);
+                    bltServices.Remove(service);
                 }
 
                 toiletPorts.RemoveAll(p => p.ToiletId == toiletId);
@@ -263,7 +295,7 @@ namespace CleanMonitor
 
         private void DashbordForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (TcpReceiveService service in tcpReceiveServices)
+            foreach (BltService service in bltServices)
                 service.Close();
         }
 
