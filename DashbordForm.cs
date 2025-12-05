@@ -36,6 +36,8 @@ namespace CleanMonitor
 
         private List<BltService> bltServices = new List<BltService>();
 
+        private MqttService mqttService;
+
         public DashbordForm()
         {
             InitializeComponent();
@@ -47,7 +49,53 @@ namespace CleanMonitor
             LoadMainCardList();
 
             StartDashboardTimer();
+
+            InitMqtt()
         }
+
+        private async void InitMqtt()
+        {
+            try
+            {
+                mqttService = new MqttService();
+
+                // MQTT 메시지 수신 이벤트
+                mqttService.dataReceived += (s, msg) =>
+                {
+                    string topic = msg.topic;
+                    string message = msg.message;
+
+                    // UI 스레드에서 안전하게 처리
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        // topic = toilet/{id}
+                        string toiletId = topic.Replace("toilet/", "");
+
+                        if (IdMapCard.ContainsKey(toiletId))
+                        {
+                            IdMapCard[toiletId].SetData(message);
+                        }
+                    }));
+                };
+
+                // 브로커 연결
+                await mqttService.ConnectAsync("", 1883);
+
+                // 모든 화장실 카드 topic 구독
+                foreach (var status in toiletStatusList)
+                {
+                    string topic = $"toilet/{status.ToiletId}";
+                    await mqttService.SubscribeAsync(topic);
+                }
+
+                Console.WriteLine("MQTT 연결 및 구독 완료");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("MQTT 초기화 오류: " + ex.Message);
+            }
+        }
+
         private void StartDashboardTimer()
         {
             // UI 스레드에서 동작하는 Windows Forms Timer
