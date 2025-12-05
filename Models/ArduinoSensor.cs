@@ -36,9 +36,27 @@ namespace CleanMonitor.Models
         {
             Value = newValue;
 
-            if (Value >= criticalThreshold) Level = SensorLevel.Critical;
-            else if (Value >= warningThreshold) Level = SensorLevel.Warning;
-            else Level = SensorLevel.Normal;
+            switch (Name[0])
+            {
+                case 'd':
+                    if (Value >= criticalThreshold)
+                        Level = SensorLevel.Critical;
+                    else if (Value >= warningThreshold)
+                        Level = SensorLevel.Warning;
+                    else
+                        Level = SensorLevel.Normal;
+                    break;
+
+                case 'l':
+                    if (Value >= criticalThreshold)
+                        Level = SensorLevel.Normal;
+                    else Level = SensorLevel.Critical;
+                    break;
+
+                default:
+                    Level = SensorLevel.Critical;
+                    break;
+            }
         }
 
      

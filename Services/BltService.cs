@@ -4,6 +4,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace CleanMonitor.Services
 {
@@ -23,7 +24,7 @@ namespace CleanMonitor.Services
             serialPort.DataReceived += SerialPort_DataReceived;
 
             try { serialPort.Open(); }
-            catch (Exception ex) { Console.WriteLine("블루투스 연결 실패: " + ex.Message); }
+            catch (Exception ex) { MessageBox.Show("연결 실패: " + ex.Message); }
         }
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)

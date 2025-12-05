@@ -35,7 +35,6 @@ namespace CleanMonitor
         private List<ToiletPort> toiletPorts = new List<ToiletPort>();
 
         private List<BltService> bltServices = new List<BltService>();
-        private List<TcpReceiveService> tcpServices = new List<TcpReceiveService>();
 
         public DashbordForm()
         {
@@ -131,8 +130,8 @@ namespace CleanMonitor
                     {
                         if (IdMapCard.ContainsKey(tp.ToiletId))
                         {
-                            TcpReceiveService tcpService = new TcpReceiveService(tp.ToiletId, "5000");
-                            tcpService.dataReceived += (s, data) =>
+                            BltService bltService = new BltService(tp.ToiletId, tp.PortName);
+                            bltService.serialEvent += (s, data) =>
                             {
                                 // 이벤트 호출 스레드가 UI 스레드가 아님
                                 // BeginInvoke (비동기),  Invoke (동기)
@@ -144,7 +143,7 @@ namespace CleanMonitor
                                     }
                                 }));
                             };
-                            tcpServices.Add(tcpService);
+                            bltServices.Add(bltService);
                         }
                     }
 
@@ -235,8 +234,8 @@ namespace CleanMonitor
 
             portRepository.SaveAll(toiletPorts);
 
-            TcpReceiveService tcpService = new TcpReceiveService(args.ToiletId, "5000");
-            tcpService.dataReceived += (s, data) =>
+            BltService bltService = new BltService(args.ToiletId, args.PortName);
+            bltService.serialEvent += (s, data) =>
             {
                 this.BeginInvoke(new Action(() =>
                 {
@@ -246,7 +245,7 @@ namespace CleanMonitor
                     }
                 }));
             };
-            tcpServices.Add(tcpService);
+            bltServices.Add(bltService);
         }
 
 
@@ -295,9 +294,10 @@ namespace CleanMonitor
 
         private void DashbordForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (TcpReceiveService service in tcpServices)
+            foreach (BltService service in bltServices)
                 service.Close();
         }
 
+        
     }
 }

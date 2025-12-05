@@ -46,7 +46,7 @@ namespace CleanMonitor
             InitUI();
 
             sensors.Add(new ArduinoSensor("dA", 100, 150));
-            sensors.Add(new ArduinoSensor("lA", 1, 2));
+            sensors.Add(new ArduinoSensor("lA", 1, 1));
         }
 
         private void InitUI()
