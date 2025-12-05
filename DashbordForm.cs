@@ -19,7 +19,7 @@ namespace CleanMonitor
 {
     public partial class DashbordForm : Form
     {
-        private Timer dashboardTimer; // 전체 집계용 타이머
+        private Timer dashboardTimer; 
 
         private StatusCard allStatusCard;
         private StatusCard sirenStatusCard;
@@ -35,6 +35,7 @@ namespace CleanMonitor
         private List<ToiletPort> toiletPorts = new List<ToiletPort>();
 
         private List<BltService> bltServices = new List<BltService>();
+        private List<TcpReceiveService> tcpServices = new List<TcpReceiveService>();
 
         public DashbordForm()
         {
@@ -86,11 +87,10 @@ namespace CleanMonitor
 
         public void AddStuatusCard()
         {
-
-            allStatusCard = new StatusCard("총 화장실", Color.LightSteelBlue, LoadImageSafe(@"C:\Images\toilet.png"));
-            sirenStatusCard = new StatusCard("교체 필요", Color.LightPink, LoadImageSafe(@"C:\Images\siren.png"));
-            wranStatusCard = new StatusCard("주의 상태", Color.LightGoldenrodYellow, LoadImageSafe(@"C:\Images\warn.png"));
-            checkStatusCard = new StatusCard("정상 상태", Color.LightGreen, LoadImageSafe(@"C:\Images\check.png"));
+            allStatusCard = new StatusCard("총 화장실", Color.LightSteelBlue, Properties.Resources.toilet);
+            sirenStatusCard = new StatusCard("교체 필요", Color.LightPink, Properties.Resources.siren);
+            wranStatusCard = new StatusCard("주의 상태", Color.LightGoldenrodYellow, Properties.Resources.warn);
+            checkStatusCard = new StatusCard("정상 상태", Color.LightGreen, Properties.Resources.check);
             tlpStatusCard.Controls.Add(allStatusCard.statusPanel, 0, 0);
             tlpStatusCard.Controls.Add(sirenStatusCard.statusPanel, 1, 0);
             tlpStatusCard.Controls.Add(wranStatusCard.statusPanel, 2, 0);
@@ -131,8 +131,8 @@ namespace CleanMonitor
                     {
                         if (IdMapCard.ContainsKey(tp.ToiletId))
                         {
-                            BltService bltService = new BltService(tp.ToiletId, tp.PortName);
-                            bltService.serialEvent += (s, data) =>
+                            TcpReceiveService tcpService = new TcpReceiveService(tp.ToiletId, "5000");
+                            tcpService.dataReceived += (s, data) =>
                             {
                                 // 이벤트 호출 스레드가 UI 스레드가 아님
                                 // BeginInvoke (비동기),  Invoke (동기)
@@ -144,7 +144,7 @@ namespace CleanMonitor
                                     }
                                 }));
                             };
-                            bltServices.Add(bltService);
+                            tcpServices.Add(tcpService);
                         }
                     }
 
@@ -235,8 +235,8 @@ namespace CleanMonitor
 
             portRepository.SaveAll(toiletPorts);
 
-            BltService bltService = new BltService(args.ToiletId, args.PortName);
-            bltService.serialEvent += (s, data) =>
+            TcpReceiveService tcpService = new TcpReceiveService(args.ToiletId, "5000");
+            tcpService.dataReceived += (s, data) =>
             {
                 this.BeginInvoke(new Action(() =>
                 {
@@ -246,7 +246,7 @@ namespace CleanMonitor
                     }
                 }));
             };
-            bltServices.Add(bltService);
+            tcpServices.Add(tcpService);
         }
 
 
@@ -295,28 +295,9 @@ namespace CleanMonitor
 
         private void DashbordForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            foreach (BltService service in bltServices)
+            foreach (TcpReceiveService service in tcpServices)
                 service.Close();
         }
 
-        private Image LoadImageSafe(string path)
-        {
-            try
-            {
-                if (System.IO.File.Exists(path))
-                {
-                    return Image.FromFile(path);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"이미지 로드 실패: {ex.Message}");
-                return null;
-            }
-        }
     }
 }

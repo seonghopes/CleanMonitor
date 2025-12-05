@@ -139,7 +139,7 @@ namespace CleanMonitor
             mainPic.Anchor = System.Windows.Forms.AnchorStyles.None;
             mainPic.BackColor = System.Drawing.Color.Transparent;
             mainPic.Size = new System.Drawing.Size(150, 100);
-            mainPic.Image = Image.FromFile(@"C:\Images\toilet_main2.png");
+            mainPic.Image = Properties.Resources.toilet_main2;
             mainPic.SizeMode = PictureBoxSizeMode.CenterImage;
 
             mainSection.AutoSize = true;
@@ -221,7 +221,7 @@ namespace CleanMonitor
             updateTime.Dock = System.Windows.Forms.DockStyle.Fill;
             updateTime.Font = new System.Drawing.Font("맑은 고딕", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             updateTime.ForeColor = System.Drawing.Color.Gray;
-            updateTime.Text = "n분전";                                                     
+            updateTime.Text = "";                                                     
             updateTime.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
         }
 

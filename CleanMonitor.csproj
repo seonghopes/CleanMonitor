@@ -103,6 +103,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="View\Modal\AddCardModal.resx">
       <DependentUpon>AddCardModal.cs</DependentUpon>
@@ -127,6 +128,38 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\check1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\siren.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\siren1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toilet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toilet_main.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toilet_main2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toilet1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toilet2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\warn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\warn1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
