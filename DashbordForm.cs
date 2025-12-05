@@ -50,7 +50,7 @@ namespace CleanMonitor
 
             StartDashboardTimer();
 
-            InitMqtt()
+            InitMqtt();
         }
 
         private async void InitMqtt()
